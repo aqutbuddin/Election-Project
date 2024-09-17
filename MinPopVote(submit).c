@@ -23,7 +23,7 @@ bool setSettings(int argc, char** argv, int* year, bool* fastMode, bool* quietMo
             if (validYear >= 1828 && validYear <= 2020 && (validYear % 4 == 0)){
                 *year = validYear;
             }
-            i++; // necessary bc checking the index+1, for the year, need to check an additinal space for the command line arg
+            i++; // necessary for checking the index+1, for the year, need to check an additional space for the command line arg
         }
         else{
             checkAll = false; 
@@ -71,14 +71,13 @@ bool parseLine(char* line, State* myState) {
 }
 
 bool readElectionData(char* filename, State* allStates, int* nStates) {
-    *nStates = 0; //required initialization prior to incrementing. 
+    *nStates = 0; //required initialization prior to incrementing 
     char line[100];
     FILE* filePtr = fopen(filename, "r");
     if (filePtr == NULL){
         return false; 
     }
     while(fgets(line, sizeof(line), filePtr)){
-        //fgets(line, sizeof(line), filePtr);
         if(parseLine(line, &allStates[*nStates])){
             (*nStates)++;
         }
@@ -94,7 +93,7 @@ int totalEVs(State* states, int szStates) {
         EVsum = EVsum + states[i].electoralVotes; 
 
     }
-    return EVsum; // modify or replace this line
+    return EVsum; 
 }
 
 int totalPVs(State* states, int szStates) {
@@ -103,7 +102,6 @@ int totalPVs(State* states, int szStates) {
         PVsum = PVsum + states[i].popularVotes; 
     }
     return PVsum;
-    // modify or replace this line
 }
 
 MinInfo minPopVoteAtLeast(State* states, int szStates, int start, int EVs) { 
@@ -114,13 +112,13 @@ MinInfo minPopVoteAtLeast(State* states, int szStates, int start, int EVs) {
         res.szSomeStates = 0;
         return res;
     }
-    else if(start == szStates){//base case, when start equal to all not enough number of EVs reached
+    else if(start == szStates){ //base case, when start equal to all not enough number of EVs reached
         res.subsetPVs = 0;
         res.sufficientEVs = false; 
         res.szSomeStates = 0;
         return res;
     }
-    // add in subset resursive call, need to substrat the EVs to see how many more still remain 
+    // add in subset resursive call, need to subtract the EVs to see how many more remain 
     MinInfo addIn = minPopVoteAtLeast(states,szStates,start+1,EVs - states[start].electoralVotes);
     
     addIn.subsetPVs = addIn.subsetPVs + (states[start].popularVotes/2)+1; //compiling the popular votes
@@ -161,14 +159,14 @@ MinInfo minPopVoteAtLeastFast(State* states, int szStates, int start, int EVs, M
     else if(memo[start][EVs].subsetPVs != -1){
         return memo[start][EVs];
     }
-    // add in subset resursive call, need to substrat the EVs to see how many more still remain 
+    // add-in subset recursive call, need to subtract the EVs to see how many more remain 
     MinInfo addIn = minPopVoteAtLeastFast(states,szStates,start+1,EVs - states[start].electoralVotes, memo);
     
     addIn.subsetPVs = addIn.subsetPVs + (states[start].popularVotes/2)+1; //compiling the popular votes
     addIn.someStates[addIn.szSomeStates] = states[start];
     addIn.szSomeStates++;
 
-    // move to the next recursive call, no adjustment to EV needed
+    // moves to the next recursive call, no adjustment to EV needed
     MinInfo nextIn = minPopVoteAtLeastFast(states, szStates, start+1, EVs, memo);
 
     if(nextIn.subsetPVs < addIn.subsetPVs && nextIn.sufficientEVs){
@@ -216,5 +214,5 @@ bool writeSubsetData(char* filenameW, int totEVs, int totPVs, int wonEVs, MinInf
         (toWin.someStates[i].popularVotes /2 + 1));
     }
     fclose(dataFile);
-    return true; //modify or replace this
+    return true; 
 }
