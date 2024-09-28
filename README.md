@@ -1,5 +1,5 @@
  "What was the fewest number of popular votes you could get and still be elected President?" <br /> 
-To address this problem, we implemented several functions that are responsible for:<br />
+To address this problem, I implemented several functions that are responsible for:<br />
 
 Setting Parameters: Initialize and configure parameters for the project.<br />
 File Validation: Ensure input files are valid and correctly formatted. <br />
